@@ -12,6 +12,7 @@ import styled from 'styled-components';
 import RNModal from './RNModal';
 import Container from './Container';
 import ButtonGroup from './ButtonGroup';
+import Hook from './Hook';
 
 const StyledTextInput = styled.TextInput`
   height: 32px;
@@ -43,6 +44,23 @@ class App extends Component {
         <TouchableOpacity onPress={this.onOpenModal}>
           <Text>Show Modal</Text>
         </TouchableOpacity>
+
+        <Hook />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        {/* Modal code  */}
         <RNModal show={showModal} onClose={this.onCloseModal}>
           <Container>
             <Text>Modal Content</Text>
