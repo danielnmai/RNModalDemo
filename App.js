@@ -6,7 +6,7 @@
  * @flow
  */
 
-import React, {Component} from 'react';
+import React, {Component, useState, useRef, useEffect} from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
 import styled from 'styled-components';
 import RNModal from './RNModal';
@@ -25,52 +25,47 @@ const StyledTextInput = styled.TextInput`
   paddingTop: 2px;
 `;
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      showModal: false,
-      textValue: '',
-    };
-  }
-  onCloseModal = () => this.setState({showModal: false});
+const usePrevious = value => {
+  const ref = useRef();
+  useEffect(() => {
+    ref.current = value;
+  })
+  return ref.current;
+}
 
-  onOpenModal = () => this.setState({showModal: true});
+export default App = () => {
+  const [count, setCount] = useState(0);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalTextValue, setModalTextValue] = useState(null);
+  const prevCount = usePrevious(count);
 
-  render() {
-    const {showModal, textValue} = this.state;
-    return (
-      <View>
-        <TouchableOpacity onPress={this.onOpenModal}>
-          <Text>Show Modal</Text>
-        </TouchableOpacity>
-
-        <Hook />
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        {/* Modal code  */}
-        <RNModal show={showModal} onClose={this.onCloseModal}>
+  return (
+    <View>
+<Text>I am playing with hook. You clicked {count} times. Previous count: {prevCount}</Text>
+      <TouchableOpacity onPress={() => setCount(count + 1)}>
+        <Text>Click Me</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => setModalVisible(true)}>
+        <Text>Show Modal</Text>
+      </TouchableOpacity>
+      {
+        renderModal(modalVisible, setModalVisible, modalTextValue, setModalTextValue)
+      }
+      <Text>You typed {modalTextValue}</Text>
+    </View>
+  )
+}
+const renderModal = (modalVisible, setModalVisible, modalTextValue, setModalTextValue) => (
+        <RNModal show={modalVisible} onClose={() => setModalVisible(false)}>
           <Container>
             <Text>Modal Content</Text>
             <StyledTextInput
-            maxLength={5}
+            // maxLength={5}
             editable
             placeholder="Enter Text Here"
             textAlignVertical="center"
-            onChangeText={text => this.setState({ textValue: text })}
-            value={textValue}
+            onChangeText={text => setModalTextValue(text)}
+            value={modalTextValue}
           />
             <ButtonGroup
             onLeftButtonPress={this.onCloseModal}
@@ -81,9 +76,4 @@ class App extends Component {
           />
           </Container>
         </RNModal>
-      </View>
-    );
-  }
-}
-
-export default App;
+)
